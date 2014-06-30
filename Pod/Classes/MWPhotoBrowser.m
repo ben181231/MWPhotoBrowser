@@ -80,7 +80,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     _thumbPhotos = [[NSMutableArray alloc] init];
     _currentGridContentOffset = CGPointMake(0, CGFLOAT_MAX);
     _didSavePreviousStateOfNavBar = NO;
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    _hideControlsOnDrag = YES;
+    if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]){
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
     
     // Listen for MWPhoto notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -1060,8 +1063,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-	// Hide controls when dragging begins
-	[self setControlsHidden:YES animated:YES permanent:NO];
+    if (_hideControlsOnDrag) {
+        // Hide controls when dragging begins
+        [self setControlsHidden:YES animated:YES permanent:NO];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
