@@ -181,6 +181,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     if (self.displayActionButton) {
         _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
     }
+    if (self.displayReportButton) {
+        _reportButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Report", nil) style:UIBarButtonItemStylePlain target:self action:@selector(reportButtonPressed:)];
+    }
     
     // Update
     [self reloadData];
@@ -247,9 +250,15 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         hasItems = YES;
         [items addObject:[[UIBarButtonItem alloc] initWithImage:[UIImage imageForResourcePath:@"MWPhotoBrowser.bundle/UIBarButtonItemGrid" ofType:@"png" inBundle:[NSBundle bundleForClass:[self class]]] style:UIBarButtonItemStylePlain target:self action:@selector(showGridAnimated)]];
     } else {
-        [items addObject:fixedSpace];
+        // Left button - Report
+        if (_reportButton) {
+            hasItems = YES;
+            [items addObject:_reportButton];
+        } else {
+            [items addObject:fixedSpace];
+        }
     }
-
+    
     // Middle - Nav
     if (_previousButton && _nextButton && numberOfPhotos > 1) {
         hasItems = YES;
@@ -271,7 +280,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             self.navigationItem.rightBarButtonItem = _actionButton;
         [items addObject:fixedSpace];
     }
-
+    
     // Toolbar visibility
     [_toolbar setItems:items];
     BOOL hideToolbar = YES;
@@ -1109,13 +1118,14 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     // Disable action button if there is no image or it's a video
     MWPhoto *photo = [self photoAtIndex:_currentPageIndex];
     if ([photo underlyingImage] == nil || ([photo respondsToSelector:@selector(isVideo)] && photo.isVideo)) {
+        _reportButton.enabled = NO;
         _actionButton.enabled = NO;
         _actionButton.tintColor = [UIColor clearColor]; // Tint to hide button
     } else {
-        _actionButton.enabled = YES;
         _actionButton.tintColor = nil;
+        _actionButton.enabled = YES;
+        _reportButton.enabled = YES;
     }
-	
 }
 
 - (void)jumpToPageAtIndex:(NSUInteger)index animated:(BOOL)animated {
@@ -1550,6 +1560,20 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             [_delegate photoBrowserDidFinishModalPresentation:self];
         } else  {
             [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+#pragma mark - Report
+
+- (void)reportButtonPressed:(id)sender {
+    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
+        if ([self.delegate respondsToSelector:@selector(photoBrowser:didReportPhotoAtIndex:)]) {
+            
+            //Let delegate handle this
+            [self.delegate photoBrowser:self didReportPhotoAtIndex:_currentPageIndex];
         }
     }
 }
