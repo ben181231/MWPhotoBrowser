@@ -188,6 +188,9 @@
     if (self.displayActionButton) {
         _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
     }
+    if (self.displayReportButton) {
+        _reportButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Report", nil) style:UIBarButtonItemStylePlain target:self action:@selector(reportButtonPressed:)];
+    }
     
     // Update
     [self reloadData];
@@ -260,9 +263,15 @@
         if (SYSTEM_VERSION_LESS_THAN(@"7")) buttonName = @"UIBarButtonItemGridiOS6";
         [items addObject:[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"MWPhotoBrowser.bundle/images/%@.png", buttonName]] style:UIBarButtonItemStylePlain target:self action:@selector(showGridAnimated)]];
     } else {
-        [items addObject:fixedSpace];
+        // Left button - Report
+        if (_reportButton) {
+            hasItems = YES;
+            [items addObject:_reportButton];
+        } else {
+            [items addObject:fixedSpace];
+        }
     }
-
+    
     // Middle - Nav
     if (_previousButton && _nextButton && numberOfPhotos > 1) {
         hasItems = YES;
@@ -284,7 +293,7 @@
             self.navigationItem.rightBarButtonItem = _actionButton;
         [items addObject:fixedSpace];
     }
-
+    
     // Toolbar visibility
     [_toolbar setItems:items];
     BOOL hideToolbar = YES;
@@ -1096,7 +1105,7 @@
 	_previousButton.enabled = (_currentPageIndex > 0);
 	_nextButton.enabled = (_currentPageIndex < numberOfPhotos - 1);
     _actionButton.enabled = [[self photoAtIndex:_currentPageIndex] underlyingImage] != nil;
-	
+    _reportButton.enabled = [[self photoAtIndex:_currentPageIndex] underlyingImage] != nil;
 }
 
 - (void)jumpToPageAtIndex:(NSUInteger)index animated:(BOOL)animated {
@@ -1442,6 +1451,20 @@
             [_delegate photoBrowserDidFinishModalPresentation:self];
         } else  {
             [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+#pragma mark - Report
+
+- (void)reportButtonPressed:(id)sender {
+    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
+        if ([self.delegate respondsToSelector:@selector(photoBrowser:didReportPhotoAtIndex:)]) {
+            
+            //Let delegate handle this
+            [self.delegate photoBrowser:self didReportPhotoAtIndex:_currentPageIndex];
         }
     }
 }
