@@ -21,6 +21,11 @@
 
 @class MWPhotoBrowser;
 
+typedef enum : NSUInteger {
+    MWPhotoBrowserStyleDefault,
+    MWPhotoBrowserStyleSolidColor
+} MWPhotoBrowserStyle;
+
 @protocol MWPhotoBrowserDelegate <NSObject>
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser;
@@ -54,7 +59,10 @@
 @property (nonatomic) BOOL hideControlsOnDrag;
 @property (nonatomic) BOOL displayReportButton;
 @property (nonatomic) NSUInteger delayToHideElements;
+@property (nonatomic) MWPhotoBrowserStyle browserStyle;
 @property (nonatomic, readonly) NSUInteger currentIndex;
+@property (nonatomic, strong) UIColor *toolbarColor;
+
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray  __attribute__((deprecated("Use initWithDelegate: instead"))); // Depreciated
