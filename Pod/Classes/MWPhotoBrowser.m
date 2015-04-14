@@ -163,13 +163,31 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 	
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
-    _toolbar.tintColor = [UIColor whiteColor];
-    _toolbar.barTintColor = nil;
-    [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-    [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
-    _toolbar.barStyle = UIBarStyleBlackTranslucent;
-    _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-    
+    if (self.browserStyle == MWPhotoBrowserStyleSolidColor) {
+        UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
+
+        _toolbar.backgroundColor = toolbarColor;
+        if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
+            [_toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
+                              barMetrics:UIBarMetricsDefault];
+            [_toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
+                              barMetrics:UIBarMetricsLandscapePhone];
+            [_toolbar setShadowImage:[[UIImage alloc] init] forToolbarPosition:UIBarPositionAny];
+        }
+    }
+    else {
+        _toolbar.tintColor = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? [UIColor whiteColor] : nil;
+		if ([_toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+	    	_toolbar.barTintColor = nil;
+		}
+		if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
+	    	[_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+		    [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
+		}
+	    _toolbar.barStyle = UIBarStyleBlackTranslucent;
+	    _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    }
+
     // Toolbar Items
     if (self.displayNavArrows) {
         NSString *arrowPathFormat = @"MWPhotoBrowser.bundle/UIBarButtonItemArrow%@";
@@ -448,13 +466,28 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 - (void)setNavBarAppearance:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:NO animated:animated];
     UINavigationBar *navBar = self.navigationController.navigationBar;
-    navBar.tintColor = [UIColor whiteColor];
-    navBar.barTintColor = nil;
-    navBar.shadowImage = nil;
-    navBar.translucent = YES;
-    navBar.barStyle = UIBarStyleBlackTranslucent;
-    [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
+
+    if (self.browserStyle == MWPhotoBrowserStyleSolidColor) {
+        UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
+
+        navBar.backgroundColor = toolbarColor;
+        if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
+            [navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+        }
+    }
+    else {
+        navBar.tintColor = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? [UIColor whiteColor] : nil;
+        if ([navBar respondsToSelector:@selector(setBarTintColor:)]) {
+            navBar.barTintColor = nil;
+            navBar.shadowImage = nil;
+        }
+        navBar.translucent = YES;
+        navBar.barStyle = UIBarStyleBlackTranslucent;
+        if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {
+            [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+            [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
+        }
+    }
 }
 
 - (void)storePreviousNavBarAppearance {
@@ -692,6 +725,19 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             if ([photo caption]) captionView = [[MWCaptionView alloc] initWithPhoto:photo];
         }
     }
+    if (self.browserStyle == MWPhotoBrowserStyleSolidColor) {
+        UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
+
+        captionView.backgroundColor = toolbarColor;
+        if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
+            [captionView setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
+                              barMetrics:UIBarMetricsDefault];
+            [captionView setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
+                              barMetrics:UIBarMetricsLandscapePhone];
+            [captionView setShadowImage:[[UIImage alloc] init] forToolbarPosition:UIBarPositionAny];
+        }
+    }
+
     captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
     return captionView;
 }
@@ -1484,6 +1530,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 }
 
 - (BOOL)prefersStatusBarHidden {
+    if (self.browserStyle == MWPhotoBrowserStyleSolidColor) {
+        return YES;
+    }
+
     if (!_leaveStatusBarAlone) {
         return _statusBarShouldBeHidden;
     } else {
