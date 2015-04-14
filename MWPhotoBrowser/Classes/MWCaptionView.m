@@ -102,5 +102,12 @@ static const CGFloat labelPadding = 10;
     [self addSubview:_label];
 }
 
+// override
+- (void)setTintColor:(UIColor *)tintColor
+{
+    [super setTintColor:tintColor];
+    _label.textColor = tintColor;
+}
+
 
 @end

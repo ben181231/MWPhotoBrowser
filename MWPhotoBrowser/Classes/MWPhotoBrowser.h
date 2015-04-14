@@ -62,6 +62,7 @@ typedef enum : NSUInteger {
 @property (nonatomic) MWPhotoBrowserStyle browserStyle;
 @property (nonatomic, readonly) NSUInteger currentIndex;
 @property (nonatomic, strong) UIColor *toolbarColor;
+@property (nonatomic, strong) UIColor *toolbarTintColor;
 
 
 // Init
