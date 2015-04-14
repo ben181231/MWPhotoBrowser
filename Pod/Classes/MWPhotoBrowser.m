@@ -167,6 +167,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
 
         _toolbar.backgroundColor = toolbarColor;
+        if (self.toolbarTintColor) {
+            _toolbar.tintColor = self.toolbarTintColor;
+        }
         if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
             [_toolbar setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
                               barMetrics:UIBarMetricsDefault];
@@ -446,6 +449,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:animated];
     }
     
+    // Show navigation controller's toolbar
+    [self.navigationController setToolbarHidden:_previousNavToolbarHidden];
+    [self.navigationController.navigationBar setTitleTextAttributes:_previousNavToolbarTitleAttributes];
+
 	// Super
 	[super viewWillDisappear:animated];
     
@@ -471,6 +478,11 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
 
         navBar.backgroundColor = toolbarColor;
+        if (self.toolbarTintColor){
+            _previousNavToolbarTitleAttributes = navBar.titleTextAttributes;
+            navBar.titleTextAttributes = @{NSForegroundColorAttributeName: self.toolbarTintColor};
+            navBar.tintColor = self.toolbarTintColor;
+        }
         if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
             [navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
         }
@@ -729,6 +741,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         UIColor *toolbarColor = self.toolbarColor ? self.toolbarColor : [UIColor colorWithWhite:0.0f alpha:0.5f];
 
         captionView.backgroundColor = toolbarColor;
+        if (self.toolbarTintColor) {
+            captionView.tintColor = self.toolbarTintColor;
+        }
         if ([[UIToolbar class] respondsToSelector:@selector(appearance)]) {
             [captionView setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionAny
                               barMetrics:UIBarMetricsDefault];

@@ -71,6 +71,7 @@
     BOOL _skipNextPagingScrollViewPositioning;
     BOOL _viewHasAppearedInitially;
     CGPoint _currentGridContentOffset;
+    NSDictionary *_previousNavToolbarTitleAttributes;
     
 }
 
