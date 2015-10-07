@@ -63,6 +63,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, readonly) NSUInteger currentIndex;
 @property (nonatomic, strong) UIColor *toolbarColor;
 @property (nonatomic, strong) UIColor *toolbarTintColor;
+@property (nonatomic, strong) NSString *reportButtonTitle;
 
 
 // Customise image selection icons as they are the only icons with a colour tint

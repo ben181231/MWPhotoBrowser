@@ -133,6 +133,27 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 	
 }
 
+#pragma mark - Getters and Setters
+
+@synthesize reportButtonTitle = _reportButtonTitle;
+- (NSString *)reportButtonTitle
+{
+    if (!_reportButtonTitle) {
+        _reportButtonTitle = NSLocalizedString(@"Report", nil);
+    }
+
+    return _reportButtonTitle;
+}
+
+- (void)setReportButtonTitle:(NSString *)reportButtonTitle
+{
+    _reportButtonTitle = reportButtonTitle;
+
+    if (_reportButton) {
+        _reportButton.title = reportButtonTitle;
+    }
+}
+
 #pragma mark - View Loading
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -203,7 +224,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
     }
     if (self.displayReportButton) {
-        _reportButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Report", nil) style:UIBarButtonItemStylePlain target:self action:@selector(reportButtonPressed:)];
+        _reportButton = [[UIBarButtonItem alloc] initWithTitle:self.reportButtonTitle style:UIBarButtonItemStylePlain target:self action:@selector(reportButtonPressed:)];
     }
     
     // Update
