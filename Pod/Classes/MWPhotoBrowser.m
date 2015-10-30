@@ -471,7 +471,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     }
     
     // Show navigation controller's toolbar
-    [self.navigationController setToolbarHidden:_previousNavBarHidden];
+    //[self.navigationController setToolbarHidden:_previousNavBarHidden];
     [self.navigationController.navigationBar setTitleTextAttributes:_previousNavToolbarTitleAttributes];
 
 	// Super
